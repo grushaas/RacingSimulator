@@ -7,3 +7,23 @@ std::string Transport::name() const
 {
 	return name_transport;
 }
+
+std::string Transport::r_type() const
+{
+	return type;
+}
+
+int Transport::r_speed() const
+{
+	return speed;
+}
+
+int Transport::r_dtbr() const
+{
+	return dtbr;
+}
+
+int Transport::r_duration() const
+{
+	return duration;
+}

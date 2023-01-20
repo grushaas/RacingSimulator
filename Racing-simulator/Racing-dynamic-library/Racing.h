@@ -16,6 +16,7 @@
 #include "Eagle.h"
 #include "Broomstick.h"
 #include <memory>
+#include <map>
 #include <iostream>
 #include <vector>
 
@@ -33,12 +34,18 @@ private:
 	};
 
 	std::vector<std::shared_ptr<Transport>> regTransport;
+	std::map<std::string, int> prizes;
+	std::vector<std::pair<std::string, int>> s_prizes;
 
 	int type_race;
 	int distance;
 
 	void OutputRegisteredTransport();
 	void OutputTransport(bool isAirVehicle);
+	void CalculationOfRacePassing();
+	void SortingMapContainer();
+	void ClearingData();
+
 public:
 	void Transport_registration();
 	RACINGDYNAMICLIBRARY_API void Beginning();
