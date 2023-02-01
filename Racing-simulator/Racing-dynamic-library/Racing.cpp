@@ -52,89 +52,120 @@ void Racing::SortingMapContainer()
 void Racing::CalculationOfRacePassing()
 {
 	int timeRace = 0;
-	int amountRest = 0;
-	for (int i = 0; i < regTransport.size(); ++i)
+
+	int regTransSize = regTransport.size();
+	for (int i = 0; i < regTransSize; ++i)
 	{
 		auto vh = regTransport[i];
-
 		int speed = vh.get()->r_speed();
 		int dtbr = vh.get()->r_dtbr();
 		int duration = vh.get()->r_duration();
 
+		int distanceRest = 0;
+		double remains = 0;
+		int stops = 0;
+		double rest = 0;
+		int movement = 0;
+
 		if (vh.get()->r_type() == "Ground")
 		{
+			distanceRest = speed * dtbr;
+			stops = distance / distanceRest;
 
-			timeRace = distance / speed;
-
-			if (dtbr > timeRace)
+			if (distance != stops * distanceRest)
 			{
-				amountRest = 0;
+				remains = distance - stops * distanceRest;
 			}
 
-			while (dtbr < timeRace)
+			if (vh.get()->name() == "Camel")
 			{
-				dtbr += dtbr;
-				if (dtbr < timeRace)
+				if (stops > 1)
 				{
-					++amountRest;
+					rest = duration + (stops - 2) * 8;
+				}
+				else if(stops == 1)
+				{
+					rest = duration;
+				}				
+				movement = stops * dtbr;
+
+				double lastPush = 0;
+				if (remains != 0)
+				{
+					lastPush = remains / speed;
+					timeRace = rest + movement + lastPush;
 				}
 				else
 				{
-					--amountRest;
-				}
-			}
-			//TODO: Оптимизировать данный код для улучшения чтения и быстродействия
-			if (vh.get()->name() == "Camel")
-			{
-				for (int i = 0; i < amountRest; ++i)
-				{
-					if (i == 0)
-					{
-						timeRace += duration;
-					}
-					else
-					{
-						timeRace += duration + 3;
-					}
+					timeRace = rest + movement;
 				}
 			}
 			else if (vh.get()->name() == "Camel-fast")
 			{
-				for (int i = 0; i < amountRest; ++i)
+				if (stops == 2)
 				{
-					if (i == 0)
-					{
-						timeRace += duration;
-					}
-					else if(i == 1)
-					{
-						timeRace += duration + 1.5;
-					}
-					else
-					{
-						timeRace += duration + 3;
-					}
+					rest = duration + 6.5;
+				}
+				else if (stops > 2)
+				{
+					rest = duration + 6.5 + (stops - 2) * 8;
+				}
+				else
+				{
+					rest = duration;
+				}
+
+				movement = stops * dtbr;
+				
+				double lastPush = 0;
+				if (remains != 0)
+				{
+					lastPush = remains / speed;
+					timeRace = rest + movement + lastPush;
+				}
+				else
+				{
+					timeRace = rest + movement;
 				}
 			}
 			else if (vh.get()->name() == "Centaur")
 			{
-				for (int i = 0; i < amountRest; ++i)
+				if (stops > 0) rest = stops * duration;
+
+				movement = stops * dtbr;
+
+				double lastPush = 0;
+				if (remains != 0)
 				{
-					timeRace += duration;
+					lastPush = remains / speed;
+					timeRace = rest + movement + lastPush;
+				}
+				else
+				{
+					timeRace = rest + movement;
 				}
 			}
 			else if (vh.get()->name() == "Boots")
 			{
-				for (int i = 0; i < amountRest; ++i)
+				if (stops == 1)
 				{
-					if (i == 0)
-					{
-						timeRace += duration;
-					}
-					else
-					{
-						timeRace += duration - 5;
-					}
+					rest = duration;
+				}
+				else if (stops > 1)
+				{
+					rest = duration + (stops - 1) * 5;
+				}
+				movement = stops * dtbr;
+
+				double lastPush = 0;
+				if (remains != 0)
+				{
+					lastPush = remains / speed;
+					timeRace = rest + movement + lastPush;
+				}
+				else
+				{
+					timeRace = rest + movement;
 				}
 			}
 		}
@@ -176,7 +207,6 @@ void Racing::CalculationOfRacePassing()
 		}
 		prizes[vh.get()->name()] = timeRace;
 	}
-
 	SortingMapContainer();
 }
 
